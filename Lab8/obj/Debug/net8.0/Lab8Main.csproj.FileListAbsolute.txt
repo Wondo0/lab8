@@ -1,0 +1,11 @@
+C:\Users\Sasha\Desktop\ax3klyLZT\OOP\LAB\Lab8\Lab8\obj\Debug\net8.0\Lab8Main.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\Sasha\Desktop\ax3klyLZT\OOP\LAB\Lab8\Lab8\obj\Debug\net8.0\Lab8Main.AssemblyInfoInputs.cache
+C:\Users\Sasha\Desktop\ax3klyLZT\OOP\LAB\Lab8\Lab8\obj\Debug\net8.0\Lab8Main.AssemblyInfo.cs
+C:\Users\Sasha\Desktop\ax3klyLZT\OOP\LAB\Lab8\Lab8\obj\Debug\net8.0\Lab8Main.csproj.CoreCompileInputs.cache
+C:\Users\Sasha\Desktop\ax3klyLZT\OOP\LAB\Lab8\Lab8\bin\Debug\net8.0\Lab8Main.deps.json
+C:\Users\Sasha\Desktop\ax3klyLZT\OOP\LAB\Lab8\Lab8\bin\Debug\net8.0\Lab8Main.dll
+C:\Users\Sasha\Desktop\ax3klyLZT\OOP\LAB\Lab8\Lab8\bin\Debug\net8.0\Lab8Main.pdb
+C:\Users\Sasha\Desktop\ax3klyLZT\OOP\LAB\Lab8\Lab8\obj\Debug\net8.0\Lab8Main.dll
+C:\Users\Sasha\Desktop\ax3klyLZT\OOP\LAB\Lab8\Lab8\obj\Debug\net8.0\refint\Lab8Main.dll
+C:\Users\Sasha\Desktop\ax3klyLZT\OOP\LAB\Lab8\Lab8\obj\Debug\net8.0\Lab8Main.pdb
+C:\Users\Sasha\Desktop\ax3klyLZT\OOP\LAB\Lab8\Lab8\obj\Debug\net8.0\ref\Lab8Main.dll

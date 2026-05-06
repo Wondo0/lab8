@@ -1,0 +1,247 @@
+﻿namespace RealtorAgency
+{
+    public interface IIdentifiable
+    {
+        int Id { get; }
+    }
+
+    public enum PropertyType
+    {
+        Apartment1Room = 1,
+        Apartment2Room,
+        Apartment3Room,
+        LandPlot
+    }
+
+    public abstract class Person : IIdentifiable
+    {
+        private static int idCounter = 1;
+        public int Id { get; protected set; }
+        public string FirstName { get; set; }
+        public string LastName { get; set; }
+
+        protected Person()
+        {
+            Id = idCounter++;
+        }
+    }
+
+    public class Address
+    {
+        public string City { get; set; }
+        public string Street { get; set; }
+        public string Building { get; set; }
+
+        public Address(string city, string street, string building)
+        {
+            City = city;
+            Street = street;
+            Building = building;
+        }
+
+        public override string ToString()
+        {
+            return $"{City}, вул. {Street}, {Building}";
+        }
+    }
+
+    public class RealEstate : IIdentifiable
+    {
+        private static int idCounter = 1;
+        public int Id { get; private set; }
+        public PropertyType Type { get; set; }
+        public decimal Price { get; set; }
+        public string Description { get; set; }
+        public Address PropertyAddress { get; private set; }
+
+        public RealEstate(string city, string street, string building)
+        {
+            Id = idCounter++;
+            PropertyAddress = new Address(city, street, building);
+        }
+
+        public override string ToString()
+        {
+            return $"Id: {Id} | {Type} | Ціна: {Price} | Адреса: {PropertyAddress} | Опис: {Description}";
+        }
+    }
+
+    public class Client : Person
+    {
+        public string BankAccountNumber { get; set; }
+        public PropertyType DesiredPropertyType { get; set; }
+        public decimal MaxPriceForProperty { get; set; }
+        public List<RealEstate> OfferedProperties { get; set; }
+
+        public Client()
+        {
+            OfferedProperties = new List<RealEstate>();
+        }
+
+        public override string ToString()
+        {
+            return $"Id: {Id} | {FirstName} {LastName} | Рахунок: {BankAccountNumber} | Шукає: {DesiredPropertyType} до {MaxPriceForProperty}";
+        }
+    }
+
+    public class OfferService
+    {
+        public bool IsMatch(Client client, RealEstate property)
+        {
+            if (client == null || property == null)
+            {
+                throw new ArgumentNullException("Клієнт або об'єкт нерухомості відсутні.");
+            }
+            return property.Type == client.DesiredPropertyType && property.Price <= client.MaxPriceForProperty;
+        }
+    }
+
+    public class AgencyManager
+    {
+        public List<Client> Clients { get; private set; }
+        public List<RealEstate> Properties { get; private set; }
+        private OfferService offerService;
+
+        public AgencyManager()
+        {
+            Clients = new List<Client>();
+            Properties = new List<RealEstate>();
+            offerService = new OfferService();
+        }
+
+        public void AddClient(Client client)
+        {
+            Clients.Add(client);
+        }
+
+        public Client GetClientById(int id)
+        {
+            var client = Clients.FirstOrDefault(c => c.Id == id);
+            if (client == null)
+            {
+                throw new ArgumentException($"Клієнта з Id {id} не знайдено.");
+            }
+            return client;
+        }
+
+        public void RemoveClientById(int id)
+        {
+            var client = GetClientById(id);
+            Clients.Remove(client);
+        }
+
+        public void UpdateClientById(int id, string firstName, string lastName, string bankAccount)
+        {
+            var client = GetClientById(id);
+            client.FirstName = firstName;
+            client.LastName = lastName;
+            client.BankAccountNumber = bankAccount;
+        }
+
+        public List<Client> GetClientsSortedByName()
+        {
+            return Clients.OrderBy(c => c.FirstName).ToList();
+        }
+
+        public List<Client> GetClientsSortedByLastName()
+        {
+            return Clients.OrderBy(c => c.LastName).ToList();
+        }
+
+        public List<Client> GetClientsSortedByBankAccount()
+        {
+            return Clients.OrderBy(c => string.IsNullOrEmpty(c.BankAccountNumber) ? '9' : c.BankAccountNumber[0]).ToList();
+        }
+
+
+        public void AddProperty(RealEstate property)
+        {
+            Properties.Add(property);
+        }
+
+        public RealEstate GetPropertyById(int id)
+        {
+            var property = Properties.FirstOrDefault(p => p.Id == id);
+            if (property == null)
+            {
+                throw new ArgumentException($"Об'єкт з Id {id} не знайдено.");
+            }
+            return property;
+        }
+
+        public void RemovePropertyById(int id)
+        {
+            var property = GetPropertyById(id);
+            Properties.Remove(property);
+        }
+
+        public void UpdatePropertyById(int id, string description, decimal price)
+        {
+            var property = GetPropertyById(id);
+            property.Description = description;
+            property.Price = price;
+        }
+
+        public List<RealEstate> GetPropertiesSortedByType()
+        {
+            return Properties.OrderBy(p => p.Type).ToList();
+        }
+
+        public List<RealEstate> GetPropertiesSortedByPrice()
+        {
+            return Properties.OrderBy(p => p.Price).ToList();
+        }
+
+        public void AddOfferToClient(int clientId, int propertyId)
+        {
+            Client client = GetClientById(clientId);
+            RealEstate property = GetPropertyById(propertyId);
+
+            if (client.OfferedProperties.Count >= 5)
+            {
+                throw new InvalidOperationException("Клієнт не може мати більше 5 пропозицій");
+            }
+            if (client.OfferedProperties.Any(p => p.Id == property.Id))
+            {
+                throw new InvalidOperationException("Цей об'єкт вже запропоновано клієнту.");
+            }
+            client.OfferedProperties.Add(property);
+        }
+
+        public void RemoveOfferFromClient(int clientId, int propertyId)
+        {
+            Client client = GetClientById(clientId);
+            var propertyToRemove = client.OfferedProperties.FirstOrDefault(p => p.Id == propertyId);
+
+            if (propertyToRemove == null)
+            {
+                throw new ArgumentException("Такої пропозиції у клієнта немає.");
+            }
+
+            client.OfferedProperties.Remove(propertyToRemove);
+        }
+
+        public bool CheckIfDesiredAvailable(int clientId)
+        {
+            Client client = GetClientById(clientId);
+            return Properties.Any(p => offerService.IsMatch(client, p));
+        }
+
+        public List<Client> SearchClients(string keyword)
+        {
+            keyword = keyword.ToLower();
+            return Clients.Where(c => c.FirstName.ToLower().Contains(keyword) || c.LastName.ToLower().Contains(keyword)).ToList();
+        }
+
+        public List<RealEstate> SearchProperties(string keyword)
+        {
+            keyword = keyword.ToLower();
+            return Properties.Where(p => p.Description.ToLower().Contains(keyword)).ToList();
+        }
+
+        public List<Client> AdvancedSearch(string lastName, PropertyType type)
+        {
+            return Clients.Where(c => c.LastName.ToLower().Contains(lastName.ToLower()) && c.DesiredPropertyType == type).ToList();
+        }
+    }
+}
